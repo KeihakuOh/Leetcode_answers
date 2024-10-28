@@ -11,8 +11,6 @@ class Solution:
                 return None
             root.left = newNodes(root.left)
             root.right = newNodes(root.right)
-            print(root.left)
-            print(root.right)
             if not root.left and not root.right and root.val == target:
                 return None
             return root
