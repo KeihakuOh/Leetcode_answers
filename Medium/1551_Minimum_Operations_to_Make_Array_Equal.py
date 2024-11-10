@@ -5,3 +5,4 @@ class Solution:
             return mid ** 2
         else: 
             return mid * (mid + 1)
+# Sum = n / 2 * (a1 + an)
