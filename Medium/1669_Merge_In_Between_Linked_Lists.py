@@ -9,7 +9,7 @@ class Solution:
         ptr2 = list1
         i, j = 0, 0
 
-        while i !=a -1:
+        while i != a - 1:
             ptr1 = ptr1.next
             i += 1 
 			
