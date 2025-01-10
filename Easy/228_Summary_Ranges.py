@@ -5,10 +5,12 @@ class Solution:
         ranges = []
         start = nums[0]
         for i in range(1, len(nums)):
+            # Check if the current number is not consecutive to the previous number.
             if nums[i] != nums[i - 1] + 1:
                 ranges.append(self.formatRange(start, nums[i - 1]))
                 start = nums[i]
 
+        # After the loop, add the last range to the list.
         ranges.append(self.format_range(start, nums[-1]))
         return ranges
 
