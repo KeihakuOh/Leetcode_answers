@@ -11,12 +11,7 @@ class Solution:
                 left_index += 1
             while not self.isVowel(s[right_index]) and left_index < right_index:
                 right_index -= 1
-
-            # Swap the characters at the pointers only if both are vowels.
-            # This ensures no unnecessary swaps occur if there are no vowels in the string.
-            if self.isVowel(characters[left_index]) and self.isVowel(characters[right_index]):
-                self.swapVowels(characters, left_index, right_index) 
-
+            self.swapVowels(characters, left_index, right_index) 
             left_index += 1
             right_index -= 1
 
