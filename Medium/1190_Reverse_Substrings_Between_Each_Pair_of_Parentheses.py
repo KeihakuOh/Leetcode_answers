@@ -3,11 +3,11 @@ class Solution:
         stack = []
         for char in s:
             if char == ')':
-                temp = ""
+                temp = []
                 while stack and stack[-1] != '(':
-                    temp += stack.pop()
+                    temp.append(stack.pop())
                 stack.pop()
-                stack.append(temp[::-1])
+                stack.extend(temp)
             else:
                 stack.append(char)
         return "".join(stack)
