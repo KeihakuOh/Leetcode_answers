@@ -1,5 +1,6 @@
 from collections import Counter
 from typing import List
+import unittest
 
 class Solution:
     def shortest_completing_word(self, license_plate: str, words: List[str]) -> str:
@@ -74,3 +75,15 @@ class Solution:
         """
         word_letter_counts = Counter(word.lower())
         return all(word_letter_counts[letter] >= license_letter_counts[letter] for letter in license_letter_counts)
+    
+class TestSolution(unittest.TestCase):
+    def setUp(self):
+        self.solution = Solution()
+
+    def test_shortest_completing_word(self):
+        self.assertEqual(self.solution.shortest_completing_word("1s3 PSt", ["step", "steps", "stripe", "stepple"]), "steps")
+        self.assertEqual(self.solution.shortest_completing_word("aBc 123", ["abc", "bac", "cab"]), "abc")
+        self.assertEqual(self.solution.shortest_completing_word("1s3 456", ["looks","pest","stew","show"]), "pest")
+
+if __name__ == "__main__":
+    unittest.main()
