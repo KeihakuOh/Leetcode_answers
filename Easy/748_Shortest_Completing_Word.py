@@ -84,6 +84,3 @@ class TestSolution(unittest.TestCase):
         self.assertEqual(self.solution.shortest_completing_word("1s3 PSt", ["step", "steps", "stripe", "stepple"]), "steps")
         self.assertEqual(self.solution.shortest_completing_word("aBc 123", ["abc", "bac", "cab"]), "abc")
         self.assertEqual(self.solution.shortest_completing_word("1s3 456", ["looks","pest","stew","show"]), "pest")
-
-if __name__ == "__main__":
-    unittest.main()
