@@ -15,3 +15,7 @@ COPY . .
 
 # 実行コマンドを pytest に設定
 CMD ["pytest", "--maxfail=1", "--disable-warnings", "-v"]
+
+
+# docker build -t pytest-container .
+# docker run --rm pytest-container
