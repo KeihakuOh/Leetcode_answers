@@ -1,86 +1,87 @@
+import pytest
 from collections import Counter
+import re
 from typing import List
-import unittest
 
 class Solution:
-    def shortest_completing_word(self, license_plate: str, words: List[str]) -> str:
+    def most_common_word(self, paragraph: str, banned_words: List[str]) -> str:
         """
-        Find the shortest completing word from a given list of words that contains all
-        the letters in the given license_plate (ignoring digits and spaces and treating
-        letters case-insensitively).
-        A completing word must have at least as many occurrences of each character as
-        it appears in license_plate.
+        Returns the most frequent word in the given paragraph, excluding banned words.
 
         Args:
-            license_plate (str): A string that may contain letters, digits, and spaces.
-            words (List[str]): A list of candidate words.
+            paragraph (str): The input paragraph containing words.
+            banned_words (List[str]): A list of words that should be excluded.
 
         Returns:
-            str: The shortest completing word from the list.
-                If multiple words match the required frequency and have the same length,
-                the first one in the list is returned.
-
-        Example:
-            >>> solution = Solution()
-            >>> solution.shortest_completing_word("1s3 PSt", ["step", "steps", "stripe", "stepple"])
-            'steps'
+            str: The most frequently occurring word in lowercase.
         """
-        license_letter_counts = self.count_license_letters(license_plate)
-        min_length = float('inf')
-        shortest_word = ""
+        words = self.extract_words(paragraph)
+        valid_word_frequencies = self.count_valid_words(words, banned_words)
+        return self.get_most_frequent_valid_word(valid_word_frequencies)
 
-        for word in words:
-            if self.is_completing_word(word, license_letter_counts):
-                if len(word) < min_length:
-                    min_length = len(word)
-                    shortest_word = word
-
-        return shortest_word
-
-    def count_license_letters(self, license_plate: str) -> Counter:
+    def extract_words(self, text: str) -> List[str]:
         """
-        Extract the frequency of letters from the given license_plate, ignoring digits
-        and spaces. Converts all letters to lowercase.
+        Extracts words from a given text and converts them to lowercase.
 
         Args:
-            license_plate (str): A string containing letters, digits, and spaces.
+            text (str): The input text.
 
         Returns:
-            Counter: A dictionary-like object containing letter frequencies.
-        
-        Example:
-            >>> solution = Solution()
-            >>> solution.count_license_letters("1s3 PSt")
-            Counter({'s': 2, 'p': 1, 't': 1})
+            List[str]: A list of words in lowercase.
         """
-        letters = [char.lower() for char in license_plate if char.isalpha()]
-        return Counter(letters)
+        return [word.lower() for word in re.findall(r'\w+', text)]
 
-    def is_completing_word(self, word: str, license_letter_counts: Counter) -> bool:
+    def count_valid_words(self, words: List[str], banned_words: List[str]) -> Counter:
         """
-        Check if a word is a completing word by ensuring it contains all the required
-        letters from the license plate in the necessary frequency.
+        Counts the occurrences of words that are not in the banned words list.
 
         Args:
-            word (str): The word to check.
-            license_letter_counts (Counter): The letter counts from the license plate.
+            words (List[str]): A list of words extracted from the text.
+            banned_words (List[str]): A list of words that should be excluded.
 
         Returns:
-            bool: True if the word is a completing word, otherwise False.
-
-        Example:
-            >>> solution = Solution()
-            >>> solution.is_completing_word("steps", Counter({'s': 2, 'p': 1, 't': 1}))
-            True
+            Counter: A dictionary-like object mapping words to their occurrence counts.
         """
-        word_letter_counts = Counter(word.lower())
-        return all(word_letter_counts[letter] >= license_letter_counts[letter] for letter in license_letter_counts)
-    
-class TestSolution(unittest.TestCase):
-    def setUp(self):
-        self.solution = Solution()
+        banned_set = set(banned_words)
+        return Counter(word for word in words if word not in banned_set)
 
-    def test_shortest_completing_word(self):
-        self.assertEqual(self.solution.shortest_completing_word("1s3 PSt", ["step", "steps", "stripe", "stepple"]), "steps")
-        self.assertEqual(self.solution.shortest_completing_word("aBc 123", ["abc", "bac", "cab"]), "abc")
-        self.assertEqual(self.solution.shortest_completing_word("1s3 456", ["looks","pest","stew","show"]), "pest")
+    def get_most_frequent_valid_word(self, valid_word_frequencies: Counter) -> str:
+        """
+        Retrieves the most frequently occurring word.
+
+        Args:
+            valid_word_frequencies (Counter): A Counter object with valid word occurrence counts.
+
+        Returns:
+            str: The most frequently occurring word.
+        """
+        return valid_word_frequencies.most_common(1)[0][0]
+
+# ---------------------------- TEST CASES ----------------------------
+
+@pytest.fixture
+def solution():
+    """Fixture to create a Solution instance for each test."""
+    return Solution()
+
+def test_most_common_word(solution):
+    """
+    Test three cases:
+    1. Basic example with banned words.
+    2. Single word with punctuation.
+    3. Case insensitivity and punctuation handling.
+    """
+    # Example 1
+    paragraph1 = "Bob hit a ball, the hit BALL flew far after it was hit."
+    banned1 = ["hit"]
+    assert solution.most_common_word(paragraph1, banned1) == "ball"
+
+    # Example 2
+    paragraph2 = "a."
+    banned2 = []
+    assert solution.most_common_word(paragraph2, banned2) == "a"
+
+    # Example 3
+    paragraph3 = "Hello hello HELLO world!"
+    banned3 = ["world"]
+    assert solution.most_common_word(paragraph3, banned3) == "hello"
